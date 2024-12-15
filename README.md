@@ -29,7 +29,7 @@ JWT_SECRET=tu_secreto_para_jwt
 1. Clona este repositorio:
 
 ```bash
-git clone https://github.com/tuusuario/oceanic-harmony.git
+git clone https://github.com/ro-agusti/oceanic-harmony-app
 ```
 
 2. Instala las dependencias:
