@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
-import { db } from '../config/database.js'; // Asegúrate de que la conexión con la DB esté bien configurada
+import { db } from '../../config/database.js'; // Asegúrate de que la conexión con la DB esté bien configurada
+//import ChallengeQuestion from './ChallengeQuestion.js';
 
 const Challenge = db.define('Challenge', {
     id: {
@@ -30,5 +31,9 @@ const Challenge = db.define('Challenge', {
     tableName: 'challenges',
     timestamps: true,
 });
+
+// Relaciones
+// Challenge.hasMany(ChallengeQuestion, { foreignKey: 'challengeId' });
+// Challenge.hasMany(Response, { foreignKey: 'challengeId' });
 
 export default Challenge;

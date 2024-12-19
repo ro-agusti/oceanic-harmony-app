@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
-import { db } from '../config/database.js';
-import { User } from './User.js';
+import { db } from '../../config/database.js';
+import { User } from '../User.js';
 import  Challenge  from './Challenge.js';
 
 const ChallengePurchase = db.define('ChallengePurchase', {
@@ -34,7 +34,9 @@ const ChallengePurchase = db.define('ChallengePurchase', {
     timestamps: true,
 });
 
-User.hasMany(ChallengePurchase, { foreignKey: 'userId' });
-Challenge.hasMany(ChallengePurchase, { foreignKey: 'challengeId' });
+// User.hasMany(ChallengePurchase, { foreignKey: 'userId' });
+// Challenge.hasMany(ChallengePurchase, { foreignKey: 'challengeId' });
 
-export { ChallengePurchase };
+export {
+    ChallengePurchase
+} ;

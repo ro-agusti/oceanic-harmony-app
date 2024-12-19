@@ -1,7 +1,7 @@
-import { ChallengePurchase } from '../models/ChallengePurchase.js';
-import  Challenge  from '../models/Challenge.js';
+import { ChallengePurchase } from '../models/challenges/ChallengePurchase.js';
+import  Challenge  from '../models/challenges/Challenge.js';
 
-export const getPurchasedChallenges = async (req, res) => {
+const getPurchasedChallenges = async (req, res) => {
     try {
         const { userId } = req.user; // Asumiendo que el ID del usuario está en el token
 
@@ -30,3 +30,7 @@ export const getPurchasedChallenges = async (req, res) => {
         res.status(500).json({ message: 'Error al obtener los challenges comprados', error });
     }
 };
+
+export {
+    getPurchasedChallenges
+} ;

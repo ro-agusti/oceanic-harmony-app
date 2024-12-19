@@ -1,4 +1,4 @@
-import Challenge from '../models/Challenge.js';
+import Challenge from '../models/challenges/Challenge.js';
 import { db } from '../config/database.js';
 
 (async () => {

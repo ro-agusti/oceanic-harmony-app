@@ -1,6 +1,6 @@
 import express from 'express';
 import { getPurchasedChallenges } from '../controllers/challengePurchaseController.js';
-import  verifyToken  from '../helpers/middleware/authMiddleware.js'; // Asegúrate de tener el middleware para verificar el token
+import  { verifyToken }  from '../helpers/middleware/authMiddleware.js'; // Asegúrate de tener el middleware para verificar el token
 
 const router = express.Router();
 

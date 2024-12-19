@@ -16,11 +16,19 @@ const User = db.define('User', {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
+        validate: {
+            isEmail: true,
+        },
     },
     password: {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    role: { 
+        type: DataTypes.ENUM('admin', 'user'), // Opciones: 'admin' o 'user'
+        allowNull: false,
+        defaultValue: 'user', // Por defecto, todos los usuarios son 'user'
+    }
 }, {
     tableName: 'users',
     timestamps: true,

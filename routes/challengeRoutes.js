@@ -1,11 +1,12 @@
 import express from 'express';
-import getAllChallenges from '../controllers/challengeController.js';
+import { getAllChallenges, createChallenge } from '../controllers/challengeController.js';
+import { verifyAdmin } from '../helpers/middleware/authMiddleware.js';
 
 const router = express.Router();
 
 router.get('/challenges', getAllChallenges);
 
-// Ruta para crear un desafío
-//router.post('/createchallenge', createChallenge);
+// Rutas para Challenges
+router.post('/create', verifyAdmin, createChallenge); // Solo un ADMIN puede crear
 
 export default router;

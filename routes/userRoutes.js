@@ -1,5 +1,5 @@
 import express from 'express';
-import verifyToken from '../helpers/middleware/authMiddleware.js'; // Importar el middleware
+import { verifyToken } from '../helpers/middleware/authMiddleware.js'; // Importar el middleware
 import { getUserProfile, registerUser, loginUser } from '../controllers/userController.js'; // Controlador para obtener perfil
 //import { User } from '../models/User.js';
 //import bcrypt from 'bcryptjs'; // Para encriptar las contraseñas
