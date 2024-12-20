@@ -7,7 +7,9 @@ import { db } from './config/database.js'; // Conexión a la base de datos
 import { verifyToken }  from './helpers/middleware/authMiddleware.js'; // Middleware de verificación de token
 import challengeRoutes from './routes/challengeRoutes.js';
 import challengePurchaseRoutes from './routes/challengePurchaseRoutes.js'; // Importa las rutas de compras
-import questionRoutes from './routes/questionsRoutes.js';
+//import questionRoutes from './routes/questionsRoutes.js';
+import questionRoutes from './routes/questionRoutes.js';
+import challengeQuestionRoutes from './routes/challengeQuestionRoutes.js'; // Importa las rutas de challengeQuestions
 import initRelations from './models/challenges/intiRelations.js';
 
 dotenv.config(); // Cargar variables de entorno
@@ -23,7 +25,8 @@ app.use(express.json()); // Para manejar JSON en las solicitudes
 app.use('/api', userRoutes); 
 app.use('/api', challengeRoutes); 
 app.use('/api', challengePurchaseRoutes); 
-app.use('/questions', questionRoutes); 
+app.use('/api', questionRoutes); 
+app.use('/api', challengeQuestionRoutes); // Ruta para challenge-questions
 
 // Sincronización y arranque
 const startApp = async () => {

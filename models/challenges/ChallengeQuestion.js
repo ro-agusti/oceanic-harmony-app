@@ -9,7 +9,8 @@ const ChallengeQuestion = db.define('ChallengeQuestion', {
         type: DataTypes.UUID,
         references: { 
             //model: () => import('./Challenge.js').then(module => module.default),  
-            model: Challenge,
+            //model: Challenge,
+            model: 'challenges',
             key: 'id' },
         allowNull: false,
     },
@@ -17,7 +18,8 @@ const ChallengeQuestion = db.define('ChallengeQuestion', {
         type: DataTypes.UUID,
         references: { 
             //model: () => import('./Question.js').then(module => module.default), 
-            model: Question,
+            // model: Question,
+            model: 'questions',
             key: 'id' },
         allowNull: false,
     },
@@ -28,7 +30,16 @@ const ChallengeQuestion = db.define('ChallengeQuestion', {
     day: {
         type: DataTypes.INTEGER,
         allowNull: true,
-    }
+    },
+    questionCategory: {
+        type: DataTypes.ENUM(
+          "daily",
+          "daily-reflection",
+          "weekly-reflection",
+          "challenge-reflection"
+        ),
+        allowNull: false,
+      },
 }, {
     tableName: 'challenge_questions',
     timestamps: false,

@@ -9,7 +9,7 @@ const getUserProfile = async (req, res) => {
 
         // Encuentra al usuario por su ID
         const user = await User.findByPk(userId, {
-            attributes: ['id', 'name', 'email'], // Asegúrate de no enviar la contraseña
+            attributes: ['id', 'name', 'email', 'role'], // Asegúrate de no enviar la contraseña
         });
 
         if (!user) {
@@ -74,7 +74,10 @@ const loginUser = async (req, res) => {
 
         // Generar el token
         const token = jwt.sign(
-            { userId: user.id }, // payload del token
+            { 
+                userId: user.id,
+                role: user.role
+             }, // payload del token
             process.env.JWT_SECRET, // Tu secreto para firmar el token
             { expiresIn: '1h' } // Expira en 1 hora
         );

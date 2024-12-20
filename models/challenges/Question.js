@@ -10,18 +10,19 @@ const Question = db.define(
       primaryKey: true,
     },
     text: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING(255),
       allowNull: false,
+      unique: true,  // Agregar restricción de unicidad
     },
-    questionCategory: {
-      type: DataTypes.ENUM(
-        "daily",
-        "daily-reflection",
-        "weekly-reflection",
-        "challenge-reflection"
-      ),
-      allowNull: false,
-    },
+    // questionCategory: {
+    //   type: DataTypes.ENUM(
+    //     "daily",
+    //     "daily-reflection",
+    //     "weekly-reflection",
+    //     "challenge-reflection"
+    //   ),
+    //   allowNull: false,
+    // },
   },
   {
     tableName: "questions",

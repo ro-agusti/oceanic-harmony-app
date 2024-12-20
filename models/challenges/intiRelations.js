@@ -9,17 +9,23 @@ import { User } from '../User.js';
 
 // Configura las relaciones entre modelos
 const initRelations = () => {
-   // Relaciones modelo challenge
+
+   // Relación entre Challenge y ChallengeQuestion
     Challenge.hasMany(ChallengeQuestion, { foreignKey: 'challengeId' });
     ChallengeQuestion.belongsTo(Challenge, { foreignKey: 'challengeId' });
+    
+    // Relación entre Question y ChallengeQuestion
+    Question.hasMany(ChallengeQuestion, { foreignKey: 'questionId' });
+    ChallengeQuestion.belongsTo(Question, { foreignKey: 'questionId' });
+    
     Challenge.hasMany(Response, { foreignKey: 'challengeId' });
+    Challenge.hasMany(ChallengePurchase, { foreignKey: 'challengeId' });
+    
     
     // relaciones modelo challenge purchase
     User.hasMany(ChallengePurchase, { foreignKey: 'userId' });
-    Challenge.hasMany(ChallengePurchase, { foreignKey: 'challengeId' });
 
   // Relaciones modelo question
-  Question.hasMany(ChallengeQuestion, { foreignKey: 'questionId' });
   Question.hasMany(Response, { foreignKey: 'questionId' });
   Question.hasMany(MultipleTextOption, { foreignKey: 'questionId' });
 
@@ -28,7 +34,6 @@ const initRelations = () => {
   Response.belongsTo(Challenge, { foreignKey: 'challengeId' });
 
   // Relaciones de ChallengeQuestion
-  ChallengeQuestion.belongsTo(Question, { foreignKey: 'questionId' });
 
   // Relaciones modelo multiple text
 MultipleTextOption.belongsTo(Response, { foreignKey: 'responseId' });
