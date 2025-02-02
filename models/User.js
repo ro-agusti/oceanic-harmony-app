@@ -15,7 +15,10 @@ const User = db.define('User', {
     email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: {
+            name: 'unique_email', // Especifica un nombre único para el índice
+            msg: 'The email address is already in use.',
+          },
         validate: {
             isEmail: true,
         },

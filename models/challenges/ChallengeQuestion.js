@@ -30,6 +30,9 @@ const ChallengeQuestion = db.define('ChallengeQuestion', {
     day: {
         type: DataTypes.INTEGER,
         allowNull: true,
+        validate: {
+            min: 1, // Evita valores de día no válidos
+          },
     },
     questionCategory: {
         type: DataTypes.ENUM(
@@ -43,6 +46,13 @@ const ChallengeQuestion = db.define('ChallengeQuestion', {
 }, {
     tableName: 'challenge_questions',
     timestamps: false,
+    hooks: {
+        beforeValidate: (challengeQuestion) => {
+          if (challengeQuestion.day) {
+            challengeQuestion.week = Math.ceil(challengeQuestion.day / 7);
+          }
+        },
+      },
 });
 
 // Relaciones

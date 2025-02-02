@@ -1,7 +1,7 @@
 // routes/questionRoutes.js
 import express from "express";
 import { verifyToken, verifyAdmin } from '../helpers/middleware/authMiddleware.js'; // Importar el middleware
-import { createQuestion, getAllQuestions, updateQuestion, deleteQuestion } from "../controllers/questionController.js";
+import { createQuestion, getAllQuestions, getQuestion, updateQuestion, deleteQuestion } from "../controllers/questionController.js";
 
 const router = express.Router();
 
@@ -10,6 +10,9 @@ router.post("/questions", verifyToken, verifyAdmin, createQuestion);
 
 //ruta para ver que el ADMIN pueda acceder a todas las preguntas
 router.get('/questions', verifyToken, verifyAdmin, getAllQuestions);
+
+//ruta para ver preguntas por id
+router.get('/questions/:id', verifyToken, getQuestion);
 
 // Ruta para modificar una pregunta
 router.put("/questions/:id", verifyToken, verifyAdmin, updateQuestion);

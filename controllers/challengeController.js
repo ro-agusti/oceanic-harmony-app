@@ -1,7 +1,8 @@
 import  Challenge  from '../models/challenges/Challenge.js';
 import Question from '../models/challenges/Question.js';
 import ChallengeQuestion from '../models/challenges/ChallengeQuestion.js';
-import { QuestionResponseType } from '../models/challenges/QuestionResponseType.js';
+//import { QuestionResponseType } from '../models/challenges/QuestionResponseType.js';
+import MultipleChoiceOption from '../models/challenges/MultipleChoiceOption.js';
 
 // conseguir todos los challenge
 const getAllChallenges = async (req, res) => {
@@ -119,14 +120,20 @@ const getAllChallengesWithQuestions = async (req, res) => {
         const challenges = await Challenge.findAll({
             include: [
                 {
-                    model: ChallengeQuestion,  // Incluye la relación a través de la tabla intermedia
+                    model: ChallengeQuestion,
+                    attributes: ['week', 'day', 'questionCategory'], 
                     include: [
                         {
-                            model: Question,  // Incluye las preguntas relacionadas
-                            attributes: ['id', 'text'],  // Asegúrate de que los atributos necesarios estén presentes
-                        },
-                    ],
-                    attributes: ['week', 'day', 'questionCategory'],  // Asegúrate de que los atributos de la tabla intermedia se incluyan
+                            model: Question,
+                            attributes: ['id', 'text', 'description', 'responseType'], 
+                            include: [
+                                {
+                                    model: MultipleChoiceOption,
+                                    attributes: ['id', 'optionText'],
+                                }
+                            ]
+                        }
+                    ]
                 },
             ],
         });
@@ -147,21 +154,27 @@ const getChallengeWithQuestions = async (req, res) => {
     const { challengeId } = req.params;
     
     try {
-        // Buscar el challenge con el id proporcionado y sus preguntas asociadas
+        // Buscar el challenge con sus preguntas y opciones de multiple choice
         const challenge = await Challenge.findOne({
             where: { id: challengeId },
             include: [
                 {
-                    model: ChallengeQuestion,  // Incluye las preguntas a través de ChallengeQuestion
+                    model: ChallengeQuestion,
+                    attributes: ['week', 'day', 'questionCategory'], 
                     include: [
                         {
-                            model: Question,  // Incluye los detalles de las preguntas
-                            attributes: ['id', 'text'],  // Puedes elegir los atributos que necesitas de la pregunta
-                        },
-                    ],
-                    attributes: ['week', 'day', 'questionCategory'],  // Incluye atributos de ChallengeQuestion (por ejemplo, semana, día, categoría)
-                },
-            ],
+                            model: Question,
+                            attributes: ['id', 'text', 'description', 'responseType'], 
+                            include: [
+                                {
+                                    model: MultipleChoiceOption,
+                                    attributes: ['id', 'optionText'],
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
         });
         
         if (!challenge) {

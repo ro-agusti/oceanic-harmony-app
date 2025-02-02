@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 const getUserProfile = async (req, res) => {
     try {
         // Obtén el ID del usuario desde el token
-        const userId = req.userId;
+        const userId = req.user.userId;
 
         // Encuentra al usuario por su ID
         const user = await User.findByPk(userId, {

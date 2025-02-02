@@ -19,9 +19,9 @@ const createChallengeQuestion = async (req, res) => {
   }
 
   // Validación para asegurarse de que al menos uno de 'week' o 'day' esté presente
-  if (!week && !day) {
+  if ( !day) {
     return res.status(400).json({
-      message: "Debes especificar al menos un 'día' o 'semana'.",
+      message: "Debes especificar al menos un 'día'.",
     });
   }
 
@@ -56,12 +56,12 @@ const createChallengeQuestion = async (req, res) => {
 
 const updateChallengeQuestion = async (req, res) => {
     const { challengeId, questionId } = req.params;
-    const { week, day, questionCategory } = req.body; // Los valores que quieres actualizar
+    const {  day, questionCategory } = req.body; // Los valores que quieres actualizar
   
     // Validación: al menos uno de los campos week, day o questionCategory debe estar presente
-    if (!week && !day && !questionCategory) {
+    if (!day && !questionCategory) {
       return res.status(400).json({
-        message: "Se debe proporcionar al menos un valor para 'week', 'day' o 'questionCategory'.",
+        message: "Se debe proporcionar al menos un valor para 'day' o 'questionCategory'.",
       });
     }
   

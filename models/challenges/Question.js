@@ -14,15 +14,18 @@ const Question = db.define(
       allowNull: false,
       unique: true,  // Agregar restricción de unicidad
     },
-    // questionCategory: {
-    //   type: DataTypes.ENUM(
-    //     "daily",
-    //     "daily-reflection",
-    //     "weekly-reflection",
-    //     "challenge-reflection"
-    //   ),
-    //   allowNull: false,
-    // },
+    description: {
+      type: DataTypes.TEXT, // Descripción opcional (ej. para guiar al usuario)
+      allowNull: true,
+    },
+    responseType: {
+      type: DataTypes.ENUM("multiple-choice", "text", "multiple-text"),
+      allowNull: false,
+    },
+    allowCustomText: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false, // Solo aplicable para multiple-choice
+    },
   },
   {
     tableName: "questions",

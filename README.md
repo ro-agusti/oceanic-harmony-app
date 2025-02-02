@@ -1,6 +1,6 @@
 # Oceanic Harmony
 
-Oceanic Harmony es una aplicación diseñada para ofrecer desafíos de bienestar y mejorar la autoconfianza a través de herramientas intuitivas y dinámicas. La aplicación incluye funcionalidades como la gestión de usuarios, compra de desafíos (journals), y visualización de desafíos adquiridos.
+Oceanic Harmony es una aplicación diseñada para ofrecer desafíos de bienestar y mejorar la autoconfianza a través de herramientas intuitivas y dinámicas. La aplicación incluye funcionalidades como la gestión de usuarios, compra de desafíos (journals), visualización de desafíos adquiridos, y la gestión de preguntas asociadas a cada desafío.
 
 ---
 
@@ -12,6 +12,7 @@ Antes de comenzar, asegúrate de tener instalado:
 - [MySQL](https://www.mysql.com/)
 
 Además, asegúrate de tener un archivo `.env` configurado con las siguientes variables:
+
 
 ```
 DB_HOST=localhost
