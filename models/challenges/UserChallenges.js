@@ -34,7 +34,4 @@ const UserChallenges = db.define('UserChallenge', {
   timestamps: true,
 });
 
-// User.belongsToMany(Challenge, { through: UserChallenge, foreignKey: 'userId' });
-// Challenge.belongsToMany(User, { through: UserChallenge, foreignKey: 'challengeId' });
-
 export default UserChallenges;

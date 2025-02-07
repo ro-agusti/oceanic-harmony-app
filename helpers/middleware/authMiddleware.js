@@ -9,19 +9,19 @@ const verifyToken = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;  // Guardar toda la información del usuario en `req.user`
-        next();  // Continuar con la siguiente función en la cadena de middlewares
+        req.user = decoded;  // Store all user information in `req.user`.
+        next();  // Continue with the following function in the middleware chain
     } catch (error) {
-        return res.status(401).json({ message: 'Token no válido' });
+        return res.status(401).json({ message: 'Invalid token' });
     }
 };
 
-// Middleware para verificar si el usuario es ADMIN
+// Middleware to verify if user is ADMIN
 const verifyAdmin = (req, res, next) => {
-    if (req.user.role !== 'admin') {  // Acceder al rol directamente desde `req.user`
+    if (req.user.role !== 'admin') {  // Access the role directly from `req.user`.
         return res.status(403).json({ message: 'Access denied. Admins only.' });
     }
-    next();  // Continuar con la siguiente función
+    next();  // Continue with the following function
 };
 
 export {

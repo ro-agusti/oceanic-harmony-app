@@ -13,7 +13,7 @@ const UserResponse = db.define(
     },
     userId: {
       type: DataTypes.UUID,
-      allowNull: false, // Identifica al usuario que responde
+      allowNull: false, 
     },
     questionId: {
       type: DataTypes.UUID,
@@ -32,7 +32,7 @@ const UserResponse = db.define(
       allowNull: true,
     },
     selectedOptionId: {
-      type: DataTypes.UUID, // Aplica solo para multiple-choice
+      type: DataTypes.UUID, // Only applicable for multiple-choice
       allowNull: true,
       references: {
         model: "multiple_choice_options",
@@ -40,11 +40,11 @@ const UserResponse = db.define(
       },
     },
     customText: {
-      type: DataTypes.STRING, // Texto adicional, si "allowCustomText" es true
+      type: DataTypes.STRING, 
       allowNull: true,
     },
     responseText: {
-      type: DataTypes.STRING, // Respuesta escrita por el usuario (para text o multiple-text)
+      type: DataTypes.STRING, // User-written response (for text or multiple-text)
       allowNull: true,
     },
   },

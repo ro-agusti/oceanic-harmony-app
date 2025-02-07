@@ -4,91 +4,88 @@ import jwt from 'jsonwebtoken';
 
 const getUserProfile = async (req, res) => {
     try {
-        // Obtén el ID del usuario desde el token
+        // Get the user ID from the token
         const userId = req.user.userId;
 
-        // Encuentra al usuario por su ID
+         // Find the user by ID
         const user = await User.findByPk(userId, {
-            attributes: ['id', 'name', 'email', 'role'], // Asegúrate de no enviar la contraseña
+            attributes: ['id', 'name', 'email', 'role'], 
         });
 
         if (!user) {
-            return res.status(404).json({ message: 'Usuario no encontrado' });
+            return res.status(404).json({ message: 'User not found' });
         }
 
-        // Retorna la información del usuario
+        // Returns user information
         res.status(200).json(user);
     } catch (error) {
-        console.error('Error al obtener el perfil del usuario:', error);
-        res.status(500).json({ message: 'Error al obtener el perfil del usuario' });
+        console.error('Error obtaining user profile:', error);
+        res.status(500).json({ message: 'Error obtaining user profile.' });
     }
 };
 
-// Controlador para registrar un nuevo usuario
 const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
 
     try {
-        // Verificar si el usuario ya existe
+        // Check if the user already exists
         const existingUser = await User.findOne({ where: { email } });
         if (existingUser) {
-            return res.status(400).json({ message: 'Usuario ya existe' });
+            return res.status(400).json({ message: 'User already exists' });
         }
 
-        // Crear un nuevo usuario
+        // create a new user
         const newUser = await User.create({
             name,
             email,
-            password,  // La contraseña se encriptará automáticamente por el hook en el modelo
+            password,  // The password will be automatically encrypted by the hook in the model
         });
 
-        // Generar un token
+        // generate a token
         const token = jwt.sign({ userId: newUser.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        // Enviar respuesta
-        res.status(201).json({ message: 'Usuario registrado', token });
+        res.status(201).json({ message: 'Registered user', token });
     } catch (error) {
-        console.error('Error al registrar usuario:', error);
-        res.status(500).json({ message: 'Error al registrar usuario', error: error.message });
+        console.error('Error registering user:', error);
+        res.status(500).json({ message: 'Error registering user', error: error.message });
     }
 };
 
-// Función para hacer login
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Buscar el usuario por email
+        // Search for the user by email
         const user = await User.findOne({ where: { email } });
 
         if (!user) {
-            return res.status(400).json({ message: "Usuario no encontrado" });
+            return res.status(400).json({ message: "user not found" });
         }
 
-        // Comparar las contraseñas
+        // check password
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
-            return res.status(400).json({ message: "Contraseña incorrecta" });
+            return res.status(400).json({ message: "incorrect password" });
         }
 
-        // Generar el token
+        // generate a token
         const token = jwt.sign(
             { 
                 userId: user.id,
                 role: user.role
              }, // payload del token
-            process.env.JWT_SECRET, // Tu secreto para firmar el token
-            { expiresIn: '1h' } // Expira en 1 hora
+            process.env.JWT_SECRET, // Your secret to signing the token
+            { expiresIn: '1h' } // Expires in 1 hour
         );
 
         return res.json({
-            message: "Usuario autenticado",
+            message: "User athenticate",
             token,
         });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: "Error al autenticar usuario" });
+        return res.status(500).json({ message: "Error authenticating user" });
     }
 };
   

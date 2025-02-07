@@ -9,7 +9,7 @@ router.post('/challenge', verifyToken, verifyAdmin, createChallenge); // Solo un
 router.put('/challenge/:id', verifyToken, verifyAdmin, updateChallenge);
 router.delete('/challenge/:id', verifyToken, verifyAdmin, deleteChallenge);
 
-// Ruta para obtener todos los challenges con sus preguntas
+// Route to get all the challenges with your questions
 router.get('/challenge-questions', getAllChallengesWithQuestions);
 router.get('/challenge-questions/:challengeId', getChallengeWithQuestions);
 

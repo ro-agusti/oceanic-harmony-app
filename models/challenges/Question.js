@@ -12,10 +12,10 @@ const Question = db.define(
     text: {
       type: DataTypes.STRING(255),
       allowNull: false,
-      unique: true,  // Agregar restricción de unicidad
+      unique: true,  
     },
     description: {
-      type: DataTypes.TEXT, // Descripción opcional (ej. para guiar al usuario)
+      type: DataTypes.TEXT, 
       allowNull: true,
     },
     responseType: {
@@ -24,7 +24,7 @@ const Question = db.define(
     },
     allowCustomText: {
       type: DataTypes.BOOLEAN,
-      allowNull: false, // Solo aplicable para multiple-choice
+      allowNull: false, // Only applicable for multiple-choice
     },
   },
   {

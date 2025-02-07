@@ -1,6 +1,5 @@
 import { DataTypes } from 'sequelize';
 import { db } from '../../config/database.js'; // Asegúrate de que la conexión con la DB esté bien configurada
-//import ChallengeQuestion from './ChallengeQuestion.js';
 
 const Challenge = db.define('Challenge', {
     id: {
@@ -17,23 +16,19 @@ const Challenge = db.define('Challenge', {
         allowNull: false,
     },
     price: {
-        type: DataTypes.DECIMAL(10, 2), // Puedes usar DECIMAL para manejar precios
+        type: DataTypes.DECIMAL(10, 2), 
         allowNull: false,
     },
-    days: {  // Nueva columna
+    days: {  
         type: DataTypes.INTEGER,
-        allowNull: false, // Esto asegura que siempre se indique un número de días
+        allowNull: false, 
         validate: {
-            min: 1, // Validación opcional: al menos un día
+            min: 1, 
         },
     }
 }, {
     tableName: 'challenges',
     timestamps: true,
 });
-
-// Relaciones
-// Challenge.hasMany(ChallengeQuestion, { foreignKey: 'challengeId' });
-// Challenge.hasMany(Response, { foreignKey: 'challengeId' });
 
 export default Challenge;

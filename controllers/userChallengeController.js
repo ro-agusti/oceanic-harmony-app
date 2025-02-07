@@ -4,36 +4,36 @@ import Question from '../models/challenges/Question.js';
 import MultipleChoiceOption from '../models/challenges/MultipleChoiceOption.js';
 import ChallengeQuestion from '../models/challenges/ChallengeQuestion.js';
 
-//permitir a un usuario seleccionar/comprar un challenge
+//allow a user to select/purchase a challenge
 const selectChallenge = async (req, res) => {
-  const { userId } = req.user; // Asegúrate de que la autenticación obtenga el ID del usuario
+  const { userId } = req.user; // Make sure authentication gets the user's ID
   const { challengeId } = req.body;
 
   if (!challengeId) {
     return res.status(400).json({
-      message: "El campo 'challengeId' es obligatorio.",
+      message: "The field ‘challengeId’ is mandatory.",
     });
   }
 
   try {
-    // Verificar si el desafío existe
+    // Check if the challenge exists
     const challenge = await Challenge.findByPk(challengeId);
     if (!challenge) {
-      return res.status(404).json({ message: 'El desafío no existe.' });
+      return res.status(404).json({ message: 'The challenge does not exist.' });
     }
 
-    // Verificar si el usuario ya seleccionó el desafío
+    // Check if the user has already selected the challenge.
     const existingSelection = await ChallengePurchase.findOne({
       where: { userId, challengeId },
     });
 
     if (existingSelection) {
       return res.status(400).json({
-        message: 'Ya seleccionaste este desafío.',
+        message: 'You have already selected this challenge.',
       });
     }
 
-    // Crear la relación usuario-desafío
+    // Creating the user-challenge relationship
     const userChallenge = await ChallengePurchase.create({
       userId,
       challengeId,
@@ -41,21 +41,21 @@ const selectChallenge = async (req, res) => {
     });
 
     res.status(201).json({
-      message: 'Desafío seleccionado con éxito.',
+      message: 'Challenge successfully selected.',
       userChallenge,
     });
   } catch (error) {
     res.status(500).json({
-      message: 'Error al seleccionar el desafío.',
+      message: 'Error when selecting the challenge.',
       error,
     });
   }
 };
 
-//mostrar todos los challenges comprados por un usuario
+//display all challenges SELECTED/purchased by a user
 const getUserChallenges = async (req, res) => {
   try {
-      const userId = req.user.userId; // Obtenemos el ID del usuario autenticado
+      const userId = req.user.userId; 
 
       const userChallenges = await ChallengePurchase.findAll({
           where: { userId },
@@ -75,7 +75,7 @@ const getUserChallenges = async (req, res) => {
                           include: [
                               {
                                 model: MultipleChoiceOption,
-                               attributes: ["id", "optionText"], // Solo traemos los campos necesarios
+                               attributes: ["id", "optionText"], 
                               },
                           ]
                       }
@@ -85,26 +85,26 @@ const getUserChallenges = async (req, res) => {
       });
 
       if (!userChallenges.length) {
-          return res.status(404).json({ message: 'No se encontraron desafíos para este usuario.' });
+          return res.status(404).json({ message: 'No challenges were found for this user.' });
       }
 
       res.status(200).json(userChallenges);
   } catch (error) {
-      console.error('Error al obtener los desafíos del usuario:', error);
+      console.error('Error obtaining user challenges:', error);
       res.status(500).json({
-          message: 'Hubo un error al obtener los desafíos del usuario.',
+          message: 'There was an error in obtaining user challenges.',
           error: error.message,
       });
   }
 };
 
-  //permitir a un usuario eliminar un challenge
+  //allow a user to remove a challenge from their selected challenges
 const deleteUserChallenge = async (req, res) => {
     try {
-      const userId = req.user.userId; // Obtenemos el ID del usuario desde el token verificado
-      const { challengeId } = req.params; // Obtenemos el ID del desafío desde los parámetros de la ruta
+      const userId = req.user.userId; 
+      const { challengeId } = req.params; 
   
-      // Buscar el registro en ChallengePurchase
+      
       const userChallenge = await ChallengePurchase.findOne({
         where: {
           userId,
@@ -112,23 +112,23 @@ const deleteUserChallenge = async (req, res) => {
         },
       });
   
-      // Verificar si el registro existe
+     
       if (!userChallenge) {
         return res.status(404).json({
-          message: 'El desafío no está en tu lista de desafíos comprados.',
+          message: 'The challenge is not in your list of purchased challenges.',
         });
       }
   
-      // Eliminar el registro
+      
       await userChallenge.destroy();
   
       res.status(200).json({
-        message: 'El desafío ha sido eliminado de tu lista de desafíos comprados.',
+        message: 'The challenge has been removed from your list of purchased challenges.',
       });
     } catch (error) {
       console.error(error);
       res.status(500).json({
-        message: 'Hubo un error al intentar eliminar el desafío.',
+        message: 'There was an error in trying to remove the challenge.',
         error: error.message,
       });
     }

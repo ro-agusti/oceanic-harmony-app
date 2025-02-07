@@ -16,7 +16,7 @@ const User = db.define('User', {
         type: DataTypes.STRING,
         allowNull: false,
         unique: {
-            name: 'unique_email', // Especifica un nombre único para el índice
+            name: 'unique_email', 
             msg: 'The email address is already in use.',
           },
         validate: {
@@ -28,9 +28,9 @@ const User = db.define('User', {
         allowNull: false,
     },
     role: { 
-        type: DataTypes.ENUM('admin', 'user'), // Opciones: 'admin' o 'user'
+        type: DataTypes.ENUM('admin', 'user'), 
         allowNull: false,
-        defaultValue: 'user', // Por defecto, todos los usuarios son 'user'
+        defaultValue: 'user', 
     }
 }, {
     tableName: 'users',
@@ -51,7 +51,7 @@ const User = db.define('User', {
     },
 });
 
-// Método para verificar contraseñas
+// Method for verifying passwords
 User.prototype.validatePassword = async function (password) {
     return bcrypt.compare(password, this.password);
 };

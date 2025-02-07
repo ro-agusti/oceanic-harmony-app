@@ -1,59 +1,51 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { Sequelize } from 'sequelize';
 import userRoutes from './routes/userRoutes.js'; // Rutas de usuarios
 import { db } from './config/database.js'; // Conexión a la base de datos
-import { verifyToken }  from './helpers/middleware/authMiddleware.js'; // Middleware de verificación de token
 import challengeRoutes from './routes/challengeRoutes.js';
-//import challengePurchaseRoutes from './routes/challengePurchaseRoutes.js'; // Importa las rutas de compras
-//import questionRoutes from './routes/questionsRoutes.js';
 import questionRoutes from './routes/questionRoutes.js';
-//import responseRoutes from './routes/responseRoutes.js';
 import challengeQuestionRoutes from './routes/challengeQuestionRoutes.js'; // Importa las rutas de challengeQuestions
 import userChallengesRoutes from './routes/userChallengeRoutes.js'
 import initRelations from './models/initRelations.js';
 
-dotenv.config(); // Cargar variables de entorno
+dotenv.config(); // Load environment variables
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 // Middlewares
 app.use(cors());
-app.use(express.json()); // Para manejar JSON en las solicitudes
+app.use(express.json()); // To handle JSON in requests
 
-// Rutas
+// Routes
 app.use('/api', userRoutes); 
 app.use('/api', challengeRoutes); 
-//app.use('/api', challengePurchaseRoutes); 
 app.use('/api', questionRoutes); 
-//app.use('/api', responseRoutes); 
-app.use('/api', challengeQuestionRoutes); // Ruta para challenge-questions
+app.use('/api', challengeQuestionRoutes); 
 app.use('/api', userChallengesRoutes);
 
-// Sincronización y arranque
+// Synchronisation and start-up
 const startApp = async () => {
     try {
-      // Inicializa relaciones entre modelos
+      // Initialises relations between models
       initRelations();
   
-      // Verificar conexión a la base de datos
+      // Verify database connection
       await db.authenticate();
-      console.log('Conexión con la base de datos establecida con éxito.');
+      console.log('Connection to the database successfully established.');
   
-      // Sincronizar los modelos con la base de datos
+      // Synchronising the models with the database
       await db.sync({ alter: true }); // ({ force: true })
-      console.log('Modelos sincronizados con la base de datos.');
+      console.log('Models synchronised with the database.');
   
-      // Iniciar servidor
+      // Start server
       app.listen(port, () => {
-        console.log(`Servidor corriendo en http://localhost:${port}`);
+        console.log(`Server running on http://localhost:${port}`);
       });
     } catch (error) {
-      console.error('Error al iniciar la aplicación:', error);
+      console.error('Error starting the application:', error);
     }
   };
   
-  // Ejecutar la función para iniciar la aplicación
-  startApp();
+ startApp();

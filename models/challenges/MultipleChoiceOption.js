@@ -1,7 +1,7 @@
 import { db } from "../../config/database.js";
 import { DataTypes } from "sequelize";
 import Question from "./Question.js";
-//import Response from "./Response.js";
+
 const MultipleChoiceOption = db.define(
     "MultipleChoiceOption",
     {
@@ -10,14 +10,6 @@ const MultipleChoiceOption = db.define(
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
-    //   questionId: {
-    //     type: DataTypes.UUID,
-    //     references: {
-    //       model: Question,
-    //       key: "id",
-    //     },
-    //     allowNull: false,
-    //   },
     questionId: {
         type: DataTypes.UUID,
         references: {
@@ -37,5 +29,4 @@ const MultipleChoiceOption = db.define(
     }
   );
   
- 
   export default MultipleChoiceOption;

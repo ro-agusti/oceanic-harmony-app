@@ -4,13 +4,13 @@ import { createChallengeQuestion, updateChallengeQuestion, deleteChallengeQuesti
 
 const router = express.Router();
 
-// Ruta para crear una pregunta asociada a un desafío
+// Route to create a question associated with a challenge
 router.post("/challenge-questions", verifyToken, verifyAdmin, createChallengeQuestion);
 
-// Ruta para actualizar los detalles de la pregunta asociada a un challenge
+// Route to update the details of the question associated with a challenge
 router.put('/challenge-questions/:challengeId/:questionId', verifyToken, verifyAdmin, updateChallengeQuestion);
 
-// Ruta para eliminar la relación entre un challenge y una pregunta
+// Route to remove the link between a challenge and a question
 router.delete('/challenge-questions/:challengeId/:questionId', verifyToken, verifyAdmin, deleteChallengeQuestion);
 
 export default router;
