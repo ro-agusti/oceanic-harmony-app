@@ -1,47 +1,47 @@
+
 # Oceanic Harmony
 
-Oceanic Harmony es una aplicación diseñada para ofrecer desafíos de bienestar y mejorar la autoconfianza a través de herramientas intuitivas y dinámicas. La aplicación incluye funcionalidades como la gestión de usuarios, compra de desafíos (journals), visualización de desafíos adquiridos, y la gestión de preguntas asociadas a cada desafío.
+Oceanic Harmony is an application designed to offer wellness challenges and improve self-confidence through intuitive and dynamic tools. The application includes features such as user management, challenge (journal) purchases, viewing purchased challenges, and managing questions associated with each challenge.
 
 ---
 
-## Requisitos previos
+## Prerequisites
 
-Antes de comenzar, asegúrate de tener instalado:
+Before getting started, ensure that you have the following installed:
 
-- [Node.js](https://nodejs.org/) (v14 o superior)
+- [Node.js](https://nodejs.org/) (v14 or higher)
 - [MySQL](https://www.mysql.com/)
 
-Además, asegúrate de tener un archivo `.env` configurado con las siguientes variables:
-
+Also, make sure you have a `.env` file configured with the following variables:
 
 ```
 DB_HOST=localhost
-DB_USER=tu_usuario
-DB_PASSWORD=tu_contraseña
+DB_USER=your_user
+DB_PASSWORD=your_password
 DB_NAME=oceanic_harmony
 DB_PORT=3306
-JWT_SECRET=tu_secreto_para_jwt
+JWT_SECRET=your_jwt_secret
 ```
 
 ---
 
-## Instalación
+## Installation
 
-1. Clona este repositorio:
+1. Clone this repository:
 
 ```bash
 git clone https://github.com/ro-agusti/oceanic-harmony-app
 ```
 
-2. Instala las dependencias:
+2. Install the dependencies:
 
 ```bash
 npm install
 ```
 
-3. Configura tu base de datos:
+3. Set up your database:
 
-Asegúrate de que tu servidor MySQL esté funcionando y ejecuta el siguiente comando para sincronizar los modelos:
+Make sure your MySQL server is running and execute the following command to synchronize the models:
 
 ```bash
 npm run sync-db
@@ -49,69 +49,69 @@ npm run sync-db
 
 ---
 
-## Scripts disponibles
+## Available Scripts
 
-### Iniciar el servidor
+### Start the server
 
 ```bash
 npm start
 ```
 
-Este comando inicia el servidor en modo producción.
+This command starts the server in production mode.
 
-### Sincronizar modelos con la base de datos
+### Synchronize models with the database
 
 ```bash
 npm run sync-db
 ```
 
-Este script sincroniza los modelos con la base de datos, creando o actualizando tablas según los modelos definidos.
+This script synchronizes the models with the database, creating or updating tables according to the defined models.
 
-### Crear un desafío base
+### Create a base challenge
 
 ```bash
 npm run create-challenge
 ```
 
-Este script crea un desafío base en la tabla `challenges` con datos predeterminados.
+This script creates a base challenge in the `challenges` table with predefined data.
 
 ---
 
-## Endpoints principales
+## Main Endpoints
 
-### Usuarios
+### Users
 
-- **Registrar usuario**: `POST /api/signup`
-  - Datos requeridos: `name`, `email`, `password`
+- **Register user**: `POST /api/signup`
+  - Required data: `name`, `email`, `password`
 - **Login**: `POST /api/login`
-  - Datos requeridos: `email`, `password`
-- **Perfil**: `GET /api/profile`
-  - Requiere autenticación mediante token (JWT).
+  - Required data: `email`, `password`
+- **Profile**: `GET /api/profile`
+  - Requires authentication via token (JWT).
 
 ### Challenges
 
-- **Obtener todos los desafíos**: `GET /api/challenges`
-- **Crear un desafío**: `POST /api/challenges`
-  - Datos requeridos: `title`, `description`, `price`, `days`
-- **Ver desafíos adquiridos**: `GET /api/purchased`
-  - Requiere autenticación mediante token (JWT).
+- **Get all challenges**: `GET /api/challenges`
+- **Create a challenge**: `POST /api/challenges`
+  - Required data: `title`, `description`, `price`, `days`
+- **View purchased challenges**: `GET /api/purchased`
+  - Requires authentication via token (JWT).
 
 ---
 
-## Crear un desafío desde scripts
+## Create a Challenge from Scripts
 
-Puedes crear desafíos base desde el script `scripts/createChallenge.js`. Asegúrate de tener configurada la base de datos y ejecuta:
+You can create base challenges from the `scripts/createChallenge.js` script. Ensure that the database is configured and run:
 
 ```bash
 npm run create-challenge
 ```
 
-Este script creará un desafío con los siguientes datos:
+This script will create a challenge with the following data:
 
 ```javascript
 {
-    title: 'Reto de 21 días de Gratitud',
-    description: 'Un desafío para cultivar la gratitud durante 21 días consecutivos.',
+    title: '21-Day Gratitude Challenge',
+    description: 'A challenge to cultivate gratitude over 21 consecutive days.',
     price: 15.99,
     days: 21
 }
@@ -119,17 +119,17 @@ Este script creará un desafío con los siguientes datos:
 
 ---
 
-## Tecnologías utilizadas
+## Technologies Used
 
 - **Backend**: Node.js, Express
-- **Base de datos**: MySQL
-- **Autenticación**: JSON Web Tokens (JWT)
+- **Database**: MySQL
+- **Authentication**: JSON Web Tokens (JWT)
 - **ORM**: Sequelize
 
 ---
 
-## Futuras funcionalidades
+## Future Features
 
-- Implementar pago integrado para la compra de desafíos.
-- Sistema de notificaciones y recordatorios.
-- Interfaz gráfica para la administración de desafíos.
+- Implement integrated payment for challenge purchases.
+- Notification and reminder system.
+- Graphical interface for challenge management.
