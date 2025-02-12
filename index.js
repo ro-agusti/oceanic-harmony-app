@@ -8,6 +8,7 @@ import questionRoutes from './routes/questionRoutes.js';
 import challengeQuestionRoutes from './routes/challengeQuestionRoutes.js'; // Importa las rutas de challengeQuestions
 import userChallengesRoutes from './routes/userChallengeRoutes.js'
 import initRelations from './models/initRelations.js';
+import userResponsesRoutes from './routes/userResponsesRoutes.js';
 
 dotenv.config(); // Load environment variables
 
@@ -24,6 +25,7 @@ app.use('/api', challengeRoutes);
 app.use('/api', questionRoutes); 
 app.use('/api', challengeQuestionRoutes); 
 app.use('/api', userChallengesRoutes);
+app.use('/api', userResponsesRoutes);
 
 // Synchronisation and start-up
 const startApp = async () => {

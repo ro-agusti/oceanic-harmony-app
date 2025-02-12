@@ -2,7 +2,13 @@ import { DataTypes } from 'sequelize';
 import { db } from '../../config/database.js';
 
 const ChallengeQuestion = db.define('ChallengeQuestion', {
-    challengeId: {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true,
+    allowNull: false,
+  },
+  challengeId: {
         type: DataTypes.UUID,
         references: { 
             model: 'challenges',

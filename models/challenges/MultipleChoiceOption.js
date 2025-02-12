@@ -9,6 +9,7 @@ const MultipleChoiceOption = db.define(
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
+        allowNull: false,
       },
     questionId: {
         type: DataTypes.UUID,

@@ -12,7 +12,7 @@ const Question = db.define(
     text: {
       type: DataTypes.STRING(255),
       allowNull: false,
-      unique: true,  
+      //unique: true,  
     },
     description: {
       type: DataTypes.TEXT, 

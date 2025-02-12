@@ -4,6 +4,8 @@ import ChallengeQuestion from './challenges/ChallengeQuestion.js';
 import { User } from './User.js';
 import ChallengePurchase from "./challenges/UserChallenges.js";
 import MultipleChoiceOption from './challenges/MultipleChoiceOption.js';
+import UserResponse from './challenges/UserResponse.js';
+import UserChallenges from './challenges/UserChallenges.js';
 
 // Configura las relaciones entre modelos
 const initRelations = () => {
@@ -47,5 +49,27 @@ ChallengePurchase.belongsTo(User, { foreignKey: 'userId' });
 Challenge.hasMany(ChallengePurchase, { foreignKey: 'challengeId' });
 ChallengePurchase.belongsTo(Challenge, { foreignKey: 'challengeId' });
 };
+
+// Defining relationships (initRelations)
+UserResponse.belongsTo(UserChallenges, {
+  foreignKey: "userChallengeId", 
+  //onDelete: "CASCADE", 
+});
+
+UserResponse.belongsTo(Question, {
+  foreignKey: "questionId", 
+});
+
+UserResponse.belongsTo(MultipleChoiceOption, {
+  foreignKey: "selectedOptionId",
+  // onDelete: "SET NULL",
+  // onUpdate: "CASCADE",
+});
+
+// Defining reverse associations
+UserChallenges.hasMany(UserResponse, { foreignKey: "userChallengeId" });
+Question.hasMany(UserResponse, { foreignKey: "questionId" });
+MultipleChoiceOption.hasMany(UserResponse, { foreignKey: "selectedOptionId" });
+
 
 export default initRelations;
