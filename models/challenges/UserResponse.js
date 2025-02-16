@@ -3,6 +3,7 @@ import { DataTypes } from "sequelize";
 import Question from "./Question.js";
 import  UserChallenges  from "./UserChallenges.js"
 import  MultipleChoiceOption  from "./MultipleChoiceOption.js"
+import { User } from "../User.js";
 //import ChallengeQuestion from "./ChallengeQuestion.js";
 
 const UserResponse = db.define(
@@ -13,6 +14,14 @@ const UserResponse = db.define(
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       allowNull: false,
+    },
+    userId: {  // <-- Agregamos el campo userId
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: User,
+        key: "id",
+      },
     },
     userChallengeId: {
       type: DataTypes.UUID,

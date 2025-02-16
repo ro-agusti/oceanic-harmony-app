@@ -14,11 +14,11 @@ const initRelations = () => {
 
    // Relación entre Challenge y ChallengeQuestion
     Challenge.hasMany(ChallengeQuestion, { foreignKey: 'challengeId' });
-    ChallengeQuestion.belongsTo(Challenge, { foreignKey: 'challengeId' });
     
     // Relación entre Question y ChallengeQuestion
     Question.hasMany(ChallengeQuestion, { foreignKey: 'questionId' });
     ChallengeQuestion.belongsTo(Question, { foreignKey: 'questionId' });
+    ChallengeQuestion.belongsTo(Challenge, { foreignKey: 'challengeId' });
     
     //----
     Challenge.belongsToMany(Question, {
@@ -50,10 +50,13 @@ Challenge.hasMany(ChallengePurchase, { foreignKey: 'challengeId' });
 ChallengePurchase.belongsTo(Challenge, { foreignKey: 'challengeId' });
 };
 
+Challenge.belongsToMany(Question, { through: ChallengeQuestion, foreignKey: 'challengeId' });
+Question.belongsToMany(Challenge, { through: ChallengeQuestion, foreignKey: 'questionId' });
+
 // Defining relationships (initRelations)
 UserResponse.belongsTo(UserChallenges, {
   foreignKey: "userChallengeId", 
-  //onDelete: "CASCADE", 
+  onDelete: "CASCADE", 
 });
 
 UserResponse.belongsTo(Question, {
@@ -65,11 +68,13 @@ UserResponse.belongsTo(MultipleChoiceOption, {
   // onDelete: "SET NULL",
   // onUpdate: "CASCADE",
 });
+UserResponse.belongsTo(User, { foreignKey: "userId" }); // <-- Definimos la relación con User
 
 // Defining reverse associations
 UserChallenges.hasMany(UserResponse, { foreignKey: "userChallengeId" });
 Question.hasMany(UserResponse, { foreignKey: "questionId" });
 MultipleChoiceOption.hasMany(UserResponse, { foreignKey: "selectedOptionId" });
 
+User.hasMany(UserResponse, { foreignKey: 'userId'});
 
 export default initRelations;
