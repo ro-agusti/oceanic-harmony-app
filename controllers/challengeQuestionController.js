@@ -2,55 +2,73 @@ import ChallengeQuestion from "../models/challenges/ChallengeQuestion.js";
 import Challenge from "../models/challenges/Challenge.js";
 import Question from "../models/challenges/Question.js";
 
-const createChallengeQuestion = async (req, res) => {
-  const { challengeId, questionId, week, day, questionCategory } = req.body;
+const createChallengeQuestions = async (req, res) => {
+  const { challengeId, questions } = req.body;
 
-  // Validation to ensure that 'challengeId', 'questionId', 'questionCategory' are present
-  if (!challengeId || !questionId || !questionCategory) {
+  if (!challengeId || !Array.isArray(questions) || questions.length === 0) {
     return res.status(400).json({
-      message: "Los campos 'challengeId', 'questionId' y 'questionCategory' son obligatorios.",
+      message: "Se requiere 'challengeId' y un array no vacío 'questions'.",
     });
   }
 
-  // validation to make sure that 'questionCategory' is within the valid categories
   const validCategories = ["daily", "daily-reflection", "weekly-reflection", "challenge-reflection"];
-  if (!validCategories.includes(questionCategory)) {
-    return res.status(400).json({ message: "Categoría de pregunta no válida." });
-  }
-
-  // Validation to make sure that at least one of 'day' is present
-  if ( !day) {
-    return res.status(400).json({
-      message: "You must specify at least one 'day'.",
-    });
-  }
 
   try {
-    // Check if the challenge and the question exist
     const challenge = await Challenge.findByPk(challengeId);
-    const question = await Question.findByPk(questionId);
-
     if (!challenge) {
-      return res.status(404).json({ message: "The challenge does not exist." });
+      return res.status(404).json({ message: "El challenge no existe." });
     }
 
-    if (!question) {
-      return res.status(404).json({ message: "The question does not exist." });
+    // Validar que todas las preguntas existan y tengan categoría válida
+    for (const q of questions) {
+      const { questionId, questionCategory, week, day } = q;
+
+      if (!questionId || !questionCategory) {
+        return res.status(400).json({
+          message: "Cada pregunta debe tener 'questionId' y 'questionCategory'.",
+        });
+      }
+
+      if (!validCategories.includes(questionCategory)) {
+        return res.status(400).json({
+          message: `Categoría inválida en una pregunta: ${questionCategory}`,
+        });
+      }
+
+      if (!day) {
+        return res.status(400).json({
+          message: "Cada pregunta debe especificar al menos un 'day'.",
+        });
+      }
+
+      const question = await Question.findByPk(questionId);
+      if (!question) {
+        return res.status(404).json({
+          message: `La pregunta con id ${questionId} no existe.`,
+        });
+      }
     }
 
-    // Create ChallengeQuestion upload
-    const newChallengeQuestion = await ChallengeQuestion.create({
-      challengeId,
-      questionId,
-      week,
-      day,
-      questionCategory,
-    });
+    // Crear las ChallengeQuestions
+    const createdQuestions = [];
+    for (const q of questions) {
+      const { questionId, questionCategory, week, day } = q;
 
-    res.status(201).json(newChallengeQuestion);
+      const newChallengeQuestion = await ChallengeQuestion.create({
+        challengeId,
+        questionId,
+        week,
+        day,
+        questionCategory,
+      });
+
+      createdQuestions.push(newChallengeQuestion);
+    }
+
+    res.status(201).json({ message: "Preguntas asignadas correctamente.", createdQuestions });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error loading challenge question", error });
+    res.status(500).json({ message: "Error al asignar preguntas", error });
   }
 };
 
@@ -116,7 +134,7 @@ const deleteChallengeQuestion = async (req, res) => {
 
 
 export {
-  createChallengeQuestion,
+  createChallengeQuestions,
   updateChallengeQuestion,
   deleteChallengeQuestion
 };

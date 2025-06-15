@@ -1,11 +1,11 @@
 import express from 'express';
 import { verifyToken, verifyAdmin } from '../helpers/middleware/authMiddleware.js'; // Importar el middleware
-import { createChallengeQuestion, updateChallengeQuestion, deleteChallengeQuestion } from '../controllers/challengeQuestionController.js';
+import { createChallengeQuestions, updateChallengeQuestion, deleteChallengeQuestion } from '../controllers/challengeQuestionController.js';
 
 const router = express.Router();
 
 // Route to create a question associated with a challenge
-router.post("/challenge-questions", verifyToken, verifyAdmin, createChallengeQuestion);
+router.post("/challenge-questions", verifyToken, verifyAdmin, createChallengeQuestions);
 
 // Route to update the details of the question associated with a challenge
 router.put('/challenge-questions/:challengeId/:questionId', verifyToken, verifyAdmin, updateChallengeQuestion);

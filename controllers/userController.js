@@ -25,7 +25,7 @@ const getUserProfile = async (req, res) => {
 };
 
 const registerUser = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, last_name, email, password } = req.body;
 
     try {
         // Check if the user already exists
@@ -37,6 +37,7 @@ const registerUser = async (req, res) => {
         // create a new user
         const newUser = await User.create({
             name,
+            last_name,
             email,
             password,  // The password will be automatically encrypted by the hook in the model
         });

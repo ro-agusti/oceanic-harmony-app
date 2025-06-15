@@ -24,6 +24,7 @@ const getAllChallenges = async (req, res) => {
 
 // create challenge from ADMIN
 const createChallenge = async (req, res) => {
+    
     try {
         const { title, description, price, days } = req.body;
 
@@ -112,6 +113,20 @@ const deleteChallenge = async (req, res) => {
     }
 };
 
+const getChallengeById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const challenge = await Challenge.findByPk(id);
+    if (!challenge) {
+      return res.status(404).json({ error: "Challenge no encontrado" });
+    }
+    res.json({ challenge });
+  } catch (error) {
+    console.error("Error al obtener challenge por ID:", error);
+    res.status(500).json({ error: "Error interno" });
+  }
+};
+
 // get all the challenges with their associated questions
 const getAllChallengesWithQuestions = async (req, res) => {
     try {
@@ -192,6 +207,7 @@ export {
     createChallenge,
     updateChallenge,
     deleteChallenge,
+    getChallengeById,
     getAllChallengesWithQuestions, 
     getChallengeWithQuestions
 };
