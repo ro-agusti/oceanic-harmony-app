@@ -74,7 +74,7 @@ const createChallengeQuestions = async (req, res) => {
 
 const updateChallengeQuestion = async (req, res) => {
     const { challengeId, questionId } = req.params;
-    const {  day, questionCategory } = req.body; 
+    const {  week, day, questionCategory } = req.body; 
   
     // Validation: at least one of the fields week, day or questionCategory must be present
     if (!day && !questionCategory) {
