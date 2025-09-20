@@ -86,89 +86,164 @@ const createUserResponse = async (req, res) => {
 
 // Get all user responses from a selected challenge
 const getUserResponses = async (req, res) => {
-    const { userId } = req.user;  
-    const { userChallengeId } = req.params;  
+  const { userId } = req.user; // autenticación previa
+  const { userChallengeId } = req.params;
 
-    // console.log("User ID:", userId);  // Verificar el userId
-    // console.log("User Challenge ID:", userChallengeId);  // Verificar el userChallengeId
+  try {
+    // 1️⃣ Obtener UserChallenge
+    const userChallenge = await UserChallenges.findOne({
+      where: { id: userChallengeId, userId },
+    });
 
-
-    try {
-        const responses = await UserResponse.findAll({
-            //userId, 
-            userChallengeId,  
-            include: [
-                {
-                    model: Question,
-                    attributes: ["text"]
-                },
-                {
-                    model: MultipleChoiceOption,
-                    attributes: ["optionText"]
-                }
-            ]
-        });
-
-        //console.log(responses); 
-
-        if (!responses || responses.length === 0) {
-            return res.status(404).json({ message: "No responses found for the user" });
-        }
-
-        // Formatear respuestas
-        const formattedResponses = responses.map(response => ({
-            responseText: response.responseText,
-            Question: {
-                text: response.Question.text
-            },
-            MultipleChoiceOption: {
-                optionText: response.MultipleChoiceOption ? response.MultipleChoiceOption.optionText : null
-            },
-            userChallengeId  // Incluimos el userChallengeId
-        }));
-
-        res.status(200).json(formattedResponses);
-    } catch (error) {
-        console.error("Error in obtaining answers:", error);
-        res.status(500).json({ message: "Internal error", error });
+    if (!userChallenge) {
+      return res.status(404).json({ message: "UserChallenge not found" });
     }
+
+    // 2️⃣ Obtener todas las preguntas del challenge
+    const challengeQuestions = await ChallengeQuestion.findAll({
+      where: { challengeId: userChallenge.challengeId },
+      include: [
+        {
+          model: Question,
+          include: [
+            { model: MultipleChoiceOption } // para multiple-choice
+          ]
+        }
+      ]
+    });
+
+    // 3️⃣ Obtener todas las respuestas del usuario
+    const userResponses = await UserResponse.findAll({
+      where: { userChallengeId, userId },
+    });
+
+    // 4️⃣ Mapear preguntas con respuestas si existen
+    const questionsWithResponses = challengeQuestions.map((cq) => {
+      const q = cq.Question;
+      const existingResponse = userResponses.find(r => r.questionId === q.id);
+
+      return {
+        questionId: q.id,
+        question: q.text,
+        questionType: q.responseType, // text, multiple-choice, multiple-text
+        options: q.MultipleChoiceOptions || [],
+        answer: existingResponse
+          ? existingResponse.responseText || existingResponse.selectedOptionId
+          : null,
+        week: cq.week,
+        day: cq.day,
+        questionCategory: cq.questionCategory,
+      };
+    });
+
+    res.status(200).json({ responses: questionsWithResponses });
+  } catch (err) {
+    console.error("Error fetching user responses:", err);
+    res.status(500).json({ message: "Internal server error", error: err });
+  }
 };
+// const getUserResponses = async (req, res) => {
+//   const { userId } = req.user;
+//   const { userChallengeId } = req.params;
 
+//   try {
+//     // 1. Obtener el UserChallenge
+//     const userChallenge = await UserChallenges.findOne({
+//       where: { id: userChallengeId, userId },
+//     });
 
-// // Modificar una respuesta del usuario
-// const updateUserResponse = async (req, res) => {
-//     const userId = req.user.id;
-//     const { responseId } = req.params;
-//     const { selectedOptionId, responseText } = req.body;
-
-//     try {
-//         // 🔹 Buscar la respuesta
-//         const response = await UserResponse.findByPk(responseId, {
-//             include: [{ model: UserChallenges, where: { userId }, attributes: ["id"] }]
-//         });
-
-//         if (!response) {
-//             return res.status(404).json({ message: "Respuesta no encontrada o no tienes acceso" });
-//         }
-
-//         // 🔹 Validar opción de multiple choice (si aplica)
-//         if (selectedOptionId) {
-//             const optionExists = await MultipleChoiceOption.findByPk(selectedOptionId);
-//             if (!optionExists) {
-//                 return res.status(400).json({ message: "Opción seleccionada inválida" });
-//             }
-//         }
-
-//         // 🔹 Actualizar respuesta
-//         response.selectedOptionId = selectedOptionId || response.selectedOptionId;
-//         response.responseText = responseText || response.responseText;
-//         await response.save();
-
-//         res.status(200).json({ message: "Respuesta actualizada", response });
-//     } catch (error) {
-//         console.error("Error al actualizar respuesta:", error);
-//         res.status(500).json({ message: "Error interno", error });
+//     if (!userChallenge) {
+//       return res.status(404).json({ message: "UserChallenge not found" });
 //     }
+
+//     // 2. Obtener las preguntas del Challenge asociado
+//     const questions = await Question.findAll({
+//       where: { challengeId: userChallenge.challengeId },
+//       include: [
+//         {
+//           model: MultipleChoiceOption,
+//           attributes: ["id", "optionText"],
+//         },
+//       ],
+//     });
+
+//     // 3. Obtener las respuestas del usuario
+//     const responses = await UserResponse.findAll({
+//       where: { userChallengeId, userId },
+//     });
+
+//     // 4. Mapear preguntas con respuestas si existen
+//     const questionsWithResponses = questions.map((q) => {
+//       const existingResponse = responses.find((r) => r.questionId === q.id);
+
+//       return {
+//         questionId: q.id,
+//         question: q.text,
+//         questionType: q.type, // text o multiple-choice
+//         options: q.MultipleChoiceOptions || [],
+//         answer: existingResponse
+//           ? existingResponse.responseText || existingResponse.selectedOptionId
+//           : null,
+//       };
+//     });
+
+//     res.status(200).json({ responses: questionsWithResponses });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: "Internal server error", error: err });
+//   }
+// };
+// const getUserResponses = async (req, res) => {
+//   const { userId } = req.user;
+//   const { userChallengeId } = req.params;
+
+//   try {
+//     // 1. Obtener el userChallenge
+//     const userChallenge = await UserChallenges.findOne({
+//       where: { id: userChallengeId, userId },
+//       include: [
+//         {
+//           model: Question,
+//           attributes: ["id", "text", "type"], // type: text o multiple-choice
+//           include: [
+//             {
+//               model: MultipleChoiceOption,
+//               attributes: ["id", "optionText"],
+//             },
+//           ],
+//         },
+//       ],
+//     });
+
+//     if (!userChallenge) {
+//       return res.status(404).json({ message: "UserChallenge not found" });
+//     }
+
+//     // 2. Obtener las respuestas del usuario
+//     const responses = await UserResponse.findAll({
+//       where: { userChallengeId, userId },
+//     });
+
+//     // 3. Mapear preguntas con respuestas si existen
+//     const questionsWithResponses = userChallenge.Questions.map((q) => {
+//       const existingResponse = responses.find((r) => r.questionId === q.id);
+
+//       return {
+//         questionId: q.id,
+//         question: q.text,
+//         questionType: q.type, // text o multiple-choice
+//         options: q.MultipleChoiceOptions || [],
+//         answer: existingResponse
+//           ? existingResponse.responseText || existingResponse.selectedOptionId
+//           : null,
+//       };
+//     });
+
+//     res.status(200).json({ responses: questionsWithResponses });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: "Internal server error", error: err });
+//   }
 // };
 
 // Delete userResponse
