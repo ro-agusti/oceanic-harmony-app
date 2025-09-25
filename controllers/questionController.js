@@ -67,26 +67,26 @@ const createQuestion = async (req, res) => {
     res.status(500).json({ message: "Error creating question." });
   }
 };
-
 const getAllQuestions = async (req, res) => {
-    try {
-        // Consult all questions from the database
-        const questions = await Question.findAll({
-          include: [
-            {
-              model: MultipleChoiceOption,
-             attributes: ["id", "optionText"], 
-            },
-          ],
-        });
-        
-        
-        res.status(200).json(questions);
-    } catch (error) {
-        console.error('Error in obtaining the questions:', error);
-        res.status(500).json({ message: 'Error in obtaining the questions.' });
-    }
+  try {
+    // Consult all questions from the database, ordenadas por updatedAt descendente
+    const questions = await Question.findAll({
+      include: [
+        {
+          model: MultipleChoiceOption,
+          attributes: ["id", "optionText"],
+        },
+      ],
+      order: [["updatedAt", "DESC"]], // 👈 más recientes primero según actualización
+    });
+
+    res.status(200).json(questions);
+  } catch (error) {
+    console.error('Error in obtaining the questions:', error);
+    res.status(500).json({ message: 'Error in obtaining the questions.' });
+  }
 };
+
 
 // get the question by ID
 const getQuestion = async (req, res) => {
@@ -113,21 +113,19 @@ const getQuestion = async (req, res) => {
     }
   };
 
-const updateQuestion = async (req, res) => {
-    try {
-        const { id } = req.params; // Get question ID from route parameters
-        const { text, description, responseType } = req.body; // Get new text from the request body
+  const updateQuestion = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { text, description, responseType, options } = req.body;
 
-        // search question by ID
-        const question = await Question.findByPk(id);
+    const question = await Question.findByPk(id);
+    if (!question) {
+      return res.status(404).json({ message: "Question not found." });
+    }
 
-        if (!question) {
-            return res.status(404).json({ message: "Question not found." });
-        }
-
-        // We calculate allowCustomText depending on responseType
     const allowCustomText = responseType === "multiple-choice";
 
+    // actualizar campos principales
     await question.update({
       text,
       description,
@@ -135,20 +133,84 @@ const updateQuestion = async (req, res) => {
       allowCustomText,
     });
 
-    res.json(question);
+    // manejar las opciones
+    if (responseType === "multiple-choice") {
+      // borro todas las opciones anteriores
+      await MultipleChoiceOption.destroy({ where: { questionId: id } });
 
-        res.status(200).json({ message: "Question successfully updated.", question });
-    } catch (error) {
-        console.error("Error updating the question:", error);
+      // creo nuevas opciones
+      if (Array.isArray(options)) {
+        const cleanOptions = options
+          .filter((opt) => opt && opt.trim() !== "")
+          .map((opt) => ({
+            questionId: id,
+            optionText: opt,
+          }));
 
-        // Specific handling of uniqueness errors
-        if (error.name === "SequelizeUniqueConstraintError") {
-            return res.status(400).json({ message: "The text of the question must be unique." });
+        if (cleanOptions.length > 0) {
+          await MultipleChoiceOption.bulkCreate(cleanOptions);
         }
-
-        res.status(500).json({ message: "Error updating the question." });
+      }
+    } else {
+      // si ya no es multiple-choice, elimino cualquier opción asociada
+      await MultipleChoiceOption.destroy({ where: { questionId: id } });
     }
+
+    // traer la pregunta actualizada con opciones
+    const updated = await Question.findByPk(id, {
+      include: [{ model: MultipleChoiceOption, attributes: ["id", "optionText"] }],
+    });
+
+    return res.status(200).json({
+      message: "Question successfully updated.",
+      question: updated,
+    });
+  } catch (error) {
+    console.error("Error updating the question:", error);
+
+    if (error.name === "SequelizeUniqueConstraintError") {
+      return res.status(400).json({ message: "The text of the question must be unique." });
+    }
+
+    return res.status(500).json({ message: "Error updating the question." });
+  }
 };
+
+//   const updateQuestion = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const { text, description, responseType } = req.body;
+
+//     const question = await Question.findByPk(id);
+//     if (!question) {
+//       return res.status(404).json({ message: "Question not found." });
+//     }
+
+//     const allowCustomText = responseType === "multiple-choice";
+
+//     await question.update({
+//       text,
+//       description,
+//       responseType,
+//       allowCustomText,
+//     });
+
+//     // ✅ Solo una respuesta
+//     return res.status(200).json({
+//       message: "Question successfully updated.",
+//       question,
+//     });
+//   } catch (error) {
+//     console.error("Error updating the question:", error);
+
+//     if (error.name === "SequelizeUniqueConstraintError") {
+//       return res.status(400).json({ message: "The text of the question must be unique." });
+//     }
+
+//     return res.status(500).json({ message: "Error updating the question." });
+//   }
+// };
+
 
 const deleteQuestion = async (req, res) => {
     try {
