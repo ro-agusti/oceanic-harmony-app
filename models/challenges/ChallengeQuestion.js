@@ -9,49 +9,55 @@ const ChallengeQuestion = db.define('ChallengeQuestion', {
     allowNull: false,
   },
   challengeId: {
-        type: DataTypes.UUID,
-        references: { 
-            model: 'challenges',
-            key: 'id' },
-        allowNull: false,
+    type: DataTypes.UUID,
+    references: { 
+      model: 'challenges',
+      key: 'id' 
     },
-    questionId: {
-        type: DataTypes.UUID,
-        references: { 
-            model: 'questions',
-            key: 'id' },
-        allowNull: false,
+    allowNull: false,
+  },
+  questionId: {
+    type: DataTypes.UUID,
+    references: { 
+      model: 'questions',
+      key: 'id' 
     },
-    week: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-    },
-    day: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        validate: {
-            min: 1, 
-          },
-    },
-    questionCategory: {
-        type: DataTypes.ENUM(
-          "daily",
-          "daily-reflection",
-          "weekly-reflection",
-          "challenge-reflection"
-        ),
-        allowNull: false,
-      },
+    allowNull: false,
+  },
+  week: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  day: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    validate: { min: 1 },
+  },
+  questionCategory: {
+    type: DataTypes.ENUM(
+      "daily",
+      "daily-reflection",
+      "weekly-reflection",
+      "challenge-reflection"
+    ),
+    allowNull: false,
+  },
 }, {
-    tableName: 'challenge_questions',
-    timestamps: false,
-    hooks: {
-        beforeValidate: (challengeQuestion) => {
-          if (challengeQuestion.day) {
-            challengeQuestion.week = Math.ceil(challengeQuestion.day / 7);
-          }
-        },
-      },
+  tableName: 'challenge_questions',
+  timestamps: false,
+  hooks: {
+    beforeValidate: (challengeQuestion) => {
+      if (challengeQuestion.day) {
+        challengeQuestion.week = Math.ceil(challengeQuestion.day / 7);
+      }
+    },
+  },
+  indexes: [
+    {
+      unique: true,
+      fields: ['challengeId', 'questionId', 'day']
+    }
+  ]
 });
 
 export default ChallengeQuestion;

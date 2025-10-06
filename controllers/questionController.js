@@ -113,7 +113,7 @@ const getQuestion = async (req, res) => {
     }
   };
 
-  const updateQuestion = async (req, res) => {
+const updateQuestion = async (req, res) => {
   try {
     const { id } = req.params;
     const { text, description, responseType, options } = req.body;
@@ -133,26 +133,29 @@ const getQuestion = async (req, res) => {
       allowCustomText,
     });
 
-    // manejar las opciones
-    if (responseType === "multiple-choice") {
-      // borro todas las opciones anteriores
-      await MultipleChoiceOption.destroy({ where: { questionId: id } });
+    // manejar opciones solo si es multiple-choice
+    if (responseType === "multiple-choice" && Array.isArray(options)) {
+      for (const opt of options) {
+        if (!opt || !opt.optionText?.trim()) continue;
 
-      // creo nuevas opciones
-      if (Array.isArray(options)) {
-        const cleanOptions = options
-          .filter((opt) => opt && opt.trim() !== "")
-          .map((opt) => ({
+        if (opt.id) {
+          // actualizar opción existente
+          await MultipleChoiceOption.update(
+            { optionText: opt.optionText.trim() },
+            { where: { id: opt.id, questionId: id } }
+          );
+        } else {
+          // crear nueva opción
+          await MultipleChoiceOption.create({
             questionId: id,
-            optionText: opt,
-          }));
-
-        if (cleanOptions.length > 0) {
-          await MultipleChoiceOption.bulkCreate(cleanOptions);
+            optionText: opt.optionText.trim(),
+          });
         }
       }
-    } else {
-      // si ya no es multiple-choice, elimino cualquier opción asociada
+    }
+
+    // si ya no es multiple-choice, elimino todas las opciones
+    if (responseType !== "multiple-choice") {
       await MultipleChoiceOption.destroy({ where: { questionId: id } });
     }
 
@@ -175,6 +178,140 @@ const getQuestion = async (req, res) => {
     return res.status(500).json({ message: "Error updating the question." });
   }
 };
+
+
+//  const updateQuestion = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const { text, description, responseType, options } = req.body;
+
+//     const question = await Question.findByPk(id);
+//     if (!question) {
+//       return res.status(404).json({ message: "Question not found." });
+//     }
+
+//     const allowCustomText = responseType === "multiple-choice";
+
+//     // actualizar campos principales
+//     await question.update({
+//       text,
+//       description,
+//       responseType,
+//       allowCustomText,
+//     });
+
+//     // manejar las opciones SOLO si me mandan "options"
+//     if (responseType === "multiple-choice" && Array.isArray(options)) {
+//       // 🔄 borrar todas las anteriores
+//       await MultipleChoiceOption.destroy({ where: { questionId: id } });
+
+//       // 🔄 crear nuevas
+//       const cleanOptions = options
+//         .filter((opt) => {
+//           if (!opt) return false;
+//           if (typeof opt === "string") return opt.trim() !== "";
+//           if (typeof opt === "object") return opt.optionText?.trim() !== "";
+//           return false;
+//         })
+//         .map((opt) => ({
+//           questionId: id,
+//           optionText: typeof opt === "string" ? opt : opt.optionText,
+//         }));
+
+//       if (cleanOptions.length > 0) {
+//         await MultipleChoiceOption.bulkCreate(cleanOptions);
+//       }
+//     }
+
+//     // si ya no es multiple-choice, borro todas las opciones asociadas
+//     if (responseType !== "multiple-choice") {
+//       await MultipleChoiceOption.destroy({ where: { questionId: id } });
+//     }
+
+//     // traer la pregunta actualizada con opciones
+//     const updated = await Question.findByPk(id, {
+//       include: [{ model: MultipleChoiceOption, attributes: ["id", "optionText"] }],
+//     });
+
+//     return res.status(200).json({
+//       message: "Question successfully updated.",
+//       question: updated,
+//     });
+//   } catch (error) {
+//     console.error("Error updating the question:", error);
+
+//     if (error.name === "SequelizeUniqueConstraintError") {
+//       return res.status(400).json({ message: "The text of the question must be unique." });
+//     }
+
+//     return res.status(500).json({ message: "Error updating the question." });
+//   }
+// };
+
+
+
+//   const updateQuestion = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const { text, description, responseType, options } = req.body;
+
+//     const question = await Question.findByPk(id);
+//     if (!question) {
+//       return res.status(404).json({ message: "Question not found." });
+//     }
+
+//     const allowCustomText = responseType === "multiple-choice";
+
+//     // actualizar campos principales
+//     await question.update({
+//       text,
+//       description,
+//       responseType,
+//       allowCustomText,
+//     });
+
+//     // manejar las opciones
+//     if (responseType === "multiple-choice") {
+//       // borro todas las opciones anteriores
+//       await MultipleChoiceOption.destroy({ where: { questionId: id } });
+
+//       // creo nuevas opciones
+//       if (Array.isArray(options)) {
+//         const cleanOptions = options
+//           .filter((opt) => opt && opt.trim() !== "")
+//           .map((opt) => ({
+//             questionId: id,
+//             optionText: opt,
+//           }));
+
+//         if (cleanOptions.length > 0) {
+//           await MultipleChoiceOption.bulkCreate(cleanOptions);
+//         }
+//       }
+//     } else {
+//       // si ya no es multiple-choice, elimino cualquier opción asociada
+//       await MultipleChoiceOption.destroy({ where: { questionId: id } });
+//     }
+
+//     // traer la pregunta actualizada con opciones
+//     const updated = await Question.findByPk(id, {
+//       include: [{ model: MultipleChoiceOption, attributes: ["id", "optionText"] }],
+//     });
+
+//     return res.status(200).json({
+//       message: "Question successfully updated.",
+//       question: updated,
+//     });
+//   } catch (error) {
+//     console.error("Error updating the question:", error);
+
+//     if (error.name === "SequelizeUniqueConstraintError") {
+//       return res.status(400).json({ message: "The text of the question must be unique." });
+//     }
+
+//     return res.status(500).json({ message: "Error updating the question." });
+//   }
+// };
 
 //   const updateQuestion = async (req, res) => {
 //   try {
