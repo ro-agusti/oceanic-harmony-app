@@ -26,7 +26,7 @@ const getAllChallenges = async (req, res) => {
 const createChallenge = async (req, res) => {
     
     try {
-        const { title, description, price, days } = req.body;
+        const { title, description, price, days, active } = req.body;
 
         // Validation of mandatory fields
         if (!title || !description || !price || !days) {
@@ -39,6 +39,7 @@ const createChallenge = async (req, res) => {
             description,
             price,
             days,
+            active
         });
 
         // Successful response
@@ -56,7 +57,7 @@ const createChallenge = async (req, res) => {
 const updateChallenge = async (req, res) => {
     try {
         const { id } = req.params;  // Obtain the challenge ID from the URL parameters
-        const { title, description, price, days } = req.body;
+        const { title, description, price, days, active } = req.body;
 
         // Validate that the required fields are not empty.
         if (!title || !description || !price || !days) {
@@ -75,6 +76,7 @@ const updateChallenge = async (req, res) => {
         challenge.description = description;
         challenge.price = price;
         challenge.days = days;
+        challenge.active = active;
 
         // Save changes
         await challenge.save();
