@@ -6,9 +6,14 @@ dotenv.config();
 const db = new Sequelize(process.env.MYSQL_URL, {
   dialect: "mysql",
   dialectOptions: {
-    ssl: { require: true }
-  }
+    ssl: {
+      require: true,
+      rejectUnauthorized: false, // 👈 permite certificados autofirmados (Railway)
+    },
+  },
+  logging: false,
 });
+
 
 db.authenticate()
   .then(() => console.log("✅ Connected to MySQL via Railway"))
