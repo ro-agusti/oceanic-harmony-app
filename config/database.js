@@ -18,6 +18,7 @@ const db = new Sequelize(process.env.MYSQL_URL, {
 db.authenticate()
   .then(() => console.log("✅ Connected to MySQL via Railway"))
   .catch(err => console.error("❌ Connection error:", err));
+  
 // const db = new Sequelize(
 //   process.env.MYSQLDATABASE,
 //   process.env.MYSQLUSER,

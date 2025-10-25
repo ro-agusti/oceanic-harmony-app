@@ -13,8 +13,8 @@ import userResponsesRoutes from './routes/userResponsesRoutes.js';
 dotenv.config(); // Load environment variables
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const port = process.env.PORT || 5000;
+//app.listen(port, () => console.log(`Server running on port ${port}`));
 // Middlewares
 app.use(cors());
 app.use(express.json()); // To handle JSON in requests
@@ -42,8 +42,8 @@ const startApp = async () => {
       console.log('Models synchronised with the database.');
   
       // Start server
-      app.listen(PORT, () => {
-        console.log(`Server running on http://localhost:${PORT}`);
+      app.listen(port, () => {
+        console.log(`Server running on http://localhost:${port}`);
       });
     } catch (error) {
       console.error('Error starting the application:', error);
