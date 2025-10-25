@@ -3,14 +3,14 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const sequelize = new Sequelize(process.env.MYSQL_URL, {
+const db = new Sequelize(process.env.MYSQL_URL, {
   dialect: "mysql",
   dialectOptions: {
     ssl: { require: true }
   }
 });
 
-sequelize.authenticate()
+db.authenticate()
   .then(() => console.log("✅ Connected to MySQL via Railway"))
   .catch(err => console.error("❌ Connection error:", err));
 // const db = new Sequelize(
