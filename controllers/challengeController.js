@@ -55,43 +55,56 @@ const createChallenge = async (req, res) => {
 
 // Controller to edit a challenge
 const updateChallenge = async (req, res) => {
-    try {
-        const { id } = req.params;  // Obtain the challenge ID from the URL parameters
-        const { title, description, price, days, active } = req.body;
+  try {
+    const { id } = req.params;
+    const { title, description, price, days, active } = req.body;
 
-        // Validate that the required fields are not empty.
-        if (!title || !description || !price || !days) {
-            return res.status(400).json({ error: 'Los campos título, descripción, precio y días son obligatorios.' });
-        }
-
-        // Search the challenge by ID
-        const challenge = await Challenge.findByPk(id);
-
-        if (!challenge) {
-            return res.status(404).json({ error: 'Challenge no encontrado.' });
-        }
-
-        // Update challenge data
-        challenge.title = title;
-        challenge.description = description;
-        challenge.price = price;
-        challenge.days = days;
-        challenge.active = active;
-
-        // Save changes
-        await challenge.save();
-
-        res.status(200).json({
-            message: 'Challenge successfully updated.',
-            challenge,
-        });
-    } catch (error) {
-        console.error('Error updating the challenge:', error);
-        res.status(500).json({ error: 'Internal error when updating the challenge.' });
+    // Buscar el challenge
+    const challenge = await Challenge.findByPk(id);
+    if (!challenge) {
+      return res.status(404).json({ error: "Challenge no encontrado." });
     }
+
+    // Actualizar solo los campos que vienen en el body
+    if (title !== undefined) challenge.title = title;
+    if (description !== undefined) challenge.description = description;
+    if (price !== undefined) challenge.price = price;
+    if (days !== undefined) challenge.days = days;
+    if (active !== undefined) challenge.active = active;
+
+    await challenge.save();
+
+    res.status(200).json({
+      message: "Challenge actualizado exitosamente.",
+      challenge,
+    });
+  } catch (error) {
+    console.error("Error al actualizar el challenge:", error);
+    res.status(500).json({ error: "Error interno al actualizar el challenge." });
+  }
 };
 
+// const updateChallengeStatus = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const { active } = req.body;
+
+//     const challenge = await Challenge.findByPk(id);
+//     if (!challenge) return res.status(404).json({ message: "Challenge not found" });
+
+//     challenge.active = active;
+//     await challenge.save();
+
+//     return res.json({ message: "Challenge updated", challenge });
+//   } catch (error) {
+//     console.error("Error updating challenge:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
+
+
 // Controller to delete a challenge
+
 const deleteChallenge = async (req, res) => {
     try {
         const { id } = req.params;  // Obtain the challenge ID from the URL parameters

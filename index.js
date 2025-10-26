@@ -43,7 +43,7 @@ const startApp = async () => {
   
       // Start server
       app.listen(port, () => {
-        console.log(`Server running on http://localhost:${port}`);
+        console.log(`Server running on port ${port}`);
       });
     } catch (error) {
       console.error('Error starting the application:', error);
