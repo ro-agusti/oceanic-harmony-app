@@ -84,26 +84,6 @@ const updateChallenge = async (req, res) => {
   }
 };
 
-// const updateChallengeStatus = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const { active } = req.body;
-
-//     const challenge = await Challenge.findByPk(id);
-//     if (!challenge) return res.status(404).json({ message: "Challenge not found" });
-
-//     challenge.active = active;
-//     await challenge.save();
-
-//     return res.json({ message: "Challenge updated", challenge });
-//   } catch (error) {
-//     console.error("Error updating challenge:", error);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// };
-
-
-// Controller to delete a challenge
 
 const deleteChallenge = async (req, res) => {
     try {

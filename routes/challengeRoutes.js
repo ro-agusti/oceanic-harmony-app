@@ -7,10 +7,8 @@ const router = express.Router();
 router.get('/challenge', getAllChallenges);
 router.post('/challenge', verifyToken, verifyAdmin, createChallenge); 
 router.put('/challenge/:id', verifyToken, verifyAdmin, updateChallenge);
-//router.patch('/challenge/:id', verifyToken, verifyAdmin, updateChallengeStatus);
 router.delete('/challenge/:id', verifyToken, verifyAdmin, deleteChallenge);
 router.get('/challenge/:id', verifyToken, verifyAdmin, getChallengeById);
-// Route to get all the challenges with your questions
 router.get('/challenge-questions', getAllChallengesWithQuestions);
 router.get('/challenge-questions/:challengeId', getChallengeWithQuestions);
 
