@@ -6,7 +6,7 @@ import ChallengeQuestion from "../models/challenges/ChallengeQuestion.js";
 
 // Create a new user response with validations
 const createUserResponse = async (req, res) => {
-    //const { userId } = req.user; 
+    const { userId } = req.user; 
     const { questionId, userChallengeId, selectedOptionId, responseText } = req.body;
 
     //const { questionId, challengeId, selectedOptionId, responseText } = req.body;
@@ -96,6 +96,7 @@ const getUserResponses = async (req, res) => {
     // 1️⃣ Obtener UserChallenge
     const userChallenge = await UserChallenges.findOne({
       where: { id: userChallengeId, userId },
+      attributes: ['id', 'challengeId']
     });
 
     if (!userChallenge) {
